@@ -33,4 +33,19 @@ public class ControladorMercancia {
                     .body(mensajeRespuesta);
         }
     }
+
+    /*@PostMapping
+    public ResponseEntity<?> LlamadoGuardarMercanciaDTO(@RequestBody Mercancia datosMercanciaEnviadosCliente) {
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(this.mercanciaServicio.almacenarMercanciaDTO(datosMercanciaEnviadosCliente));
+        } catch (Exception error) {
+            HashMap<String, Object> mensajeRespuesta = new HashMap<>();
+            mensajeRespuesta.put("mensaje", error.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(mensajeRespuesta);
+        }
+    }*/
 }
