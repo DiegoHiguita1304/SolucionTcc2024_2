@@ -83,8 +83,12 @@ public class MercanciaServicio {
     }
 
     //buscar todos
-    public List<Mercancia> buscarTodasMercancias(){
-        return null;
+    public List<MercanciaDTO> buscarTodasMercancias() throws Exception{
+        try {
+            return  this.mapaMercancia.mapearListaMercancia(this.repositorio.findAll());
+        }catch(Exception error){
+            throw new Exception(error.getMessage());
+        }
     }
 
     //buscar por id

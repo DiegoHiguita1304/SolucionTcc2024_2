@@ -3,6 +3,9 @@ package com.example.BODEGASTCCAPI.servicios;
 import com.example.BODEGASTCCAPI.helpers.mensajes.Mensaje;
 import com.example.BODEGASTCCAPI.helpers.validaciones.ZonaBodegaValidacion;
 import com.example.BODEGASTCCAPI.modelos.ZonaBodega;
+import com.example.BODEGASTCCAPI.modelos.dto.RemitenteDTO;
+import com.example.BODEGASTCCAPI.modelos.dto.ZonaBodegaDTO;
+import com.example.BODEGASTCCAPI.modelos.mapas.IMapaZonaBodega;
 import com.example.BODEGASTCCAPI.repositorios.IZonaBodegaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,9 @@ public class ZonaBodegaServicio {
 
     @Autowired
     ZonaBodegaValidacion validacion;
+
+    @Autowired
+    IMapaZonaBodega mapaZonaBodega;
 
     // Método para guardar una zona de bodega
     public ZonaBodega almacenarZonaBodega(ZonaBodega zonaBodega) throws Exception {
@@ -48,8 +54,12 @@ public class ZonaBodegaServicio {
     }
 
     // Método para buscar todas las zonas de bodega
-    public List<ZonaBodega> buscarTodasZonasBodega() {
-        return repositorio.findAll();
+    public List<ZonaBodegaDTO> buscarTodasLasZonasBodega() throws Exception{
+        try {
+            return  this.mapaZonaBodega.mapearListaZonaBodega(this.repositorio.findAll());
+        }catch(Exception error){
+            throw new Exception(error.getMessage());
+        }
     }
 
     // Método para buscar una zona de bodega por su ID

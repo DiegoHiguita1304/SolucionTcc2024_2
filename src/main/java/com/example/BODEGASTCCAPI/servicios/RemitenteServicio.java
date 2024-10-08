@@ -3,6 +3,9 @@ package com.example.BODEGASTCCAPI.servicios;
 import com.example.BODEGASTCCAPI.helpers.mensajes.Mensaje;
 import com.example.BODEGASTCCAPI.helpers.validaciones.RemitenteValidacion;
 import com.example.BODEGASTCCAPI.modelos.Remitente;
+import com.example.BODEGASTCCAPI.modelos.dto.MercanciaDTO;
+import com.example.BODEGASTCCAPI.modelos.dto.RemitenteDTO;
+import com.example.BODEGASTCCAPI.modelos.mapas.IMapaRemitente;
 import com.example.BODEGASTCCAPI.repositorios.IRemitenteRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,9 @@ public class RemitenteServicio {
 
     @Autowired
     RemitenteValidacion validacion;
+
+    @Autowired
+    IMapaRemitente mapaRemitente;
 
     // Guardar remitente
     public Remitente almacenarRemitente(Remitente datosRemitente) throws Exception {
@@ -43,8 +49,12 @@ public class RemitenteServicio {
     }
 
     // Buscar todos los remitentes
-    public List<Remitente> buscarTodosRemitentes() {
-        return repositorio.findAll();
+    public List<RemitenteDTO> buscarTodosLosRemitentes() throws Exception{
+        try {
+            return  this.mapaRemitente.mapearListaRemitente(this.repositorio.findAll());
+        }catch(Exception error){
+            throw new Exception(error.getMessage());
+        }
     }
 
     // Buscar remitente por ID
