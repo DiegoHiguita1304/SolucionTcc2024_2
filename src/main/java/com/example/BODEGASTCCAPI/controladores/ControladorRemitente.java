@@ -1,7 +1,15 @@
 package com.example.BODEGASTCCAPI.controladores;
 
 import com.example.BODEGASTCCAPI.modelos.Remitente;
+import com.example.BODEGASTCCAPI.modelos.dto.MercanciaDTO;
 import com.example.BODEGASTCCAPI.servicios.RemitenteServicio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/soluciontcc/v1/remitentes")
+@Tag(name="Servicios asociados a la entidad o tabla remitente", description = "\nse hace CRUD completo a la tabla remitente, permitiendo lectura y escritura de datos")
 public class ControladorRemitente {
 
     // Inyectar el servicio de remitente
@@ -20,6 +29,33 @@ public class ControladorRemitente {
 
     // Método para guardar remitente
     @PostMapping
+    @Operation(
+            summary = "Registra un remitente nuevo en la base de datos",
+            description = "al llevar los datos del modelo remitente se permite un registro exitoso del objeto en Bd"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Remitente almacenado con exito en BD",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = MercanciaDTO.class),
+                                    examples = @ExampleObject(value = "{\"nombre\":\"Diego Higuita\",\"departamento\":\"Antioquia\",\"municipio\":\"Medellin\",\"direccion\":\"calle 34b sur 123\",\"metodo_pago\":\"Efectivo\"}")
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Error al registrar el remitente",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class),
+                                    examples = @ExampleObject(value = "{\"mensaje\":\"El nombre que ingresaste es invalido, verificalo\"}")
+                            )
+                    )
+            }
+    )
+
     public ResponseEntity<?> llamadoGuardarRemitente(@RequestBody Remitente datosRemitenteEnviadosCliente) {
         try {
             // Llamar al servicio para almacenar remitente

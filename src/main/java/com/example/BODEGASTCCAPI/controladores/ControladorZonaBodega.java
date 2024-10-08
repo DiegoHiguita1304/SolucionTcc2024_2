@@ -1,7 +1,15 @@
 package com.example.BODEGASTCCAPI.controladores;
 
 import com.example.BODEGASTCCAPI.modelos.ZonaBodega;
+import com.example.BODEGASTCCAPI.modelos.dto.MercanciaDTO;
 import com.example.BODEGASTCCAPI.servicios.ZonaBodegaServicio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/soluciontcc/v1/zonasbodega")
+@Tag(name="Servicios asociados a la entidad o tabla zonaBodega", description = "\nse hace CRUD completo a la tabla zonaBodega, permitiendo lectura y escritura de datos")
 public class ControladorZonaBodega {
 
     @Autowired
@@ -19,6 +28,33 @@ public class ControladorZonaBodega {
 
     // Guardar una nueva zona de bodega
     @PostMapping
+    @Operation(
+            summary = "Registra una zonaBodega nueva en la base de datos",
+            description = "al llevar los datos del modelo zonaBodega se permite un registro exitoso del objeto en Bd"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "ZonaBodega almacenada con exito en BD",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = MercanciaDTO.class),
+                                    examples = @ExampleObject(value = "{\"idZona\":\"123\",\"nombre_zona\":\"A\",\"capacidad_maxima_volumen\":\"2.500\",\"capacidad_maxima_peso\":\"5.000\",\"capacidad_volumen_ocupado\":\"1.000\",\"capacidad_peso_ocupado\":\"4.000\"}")
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Error al registrar la ZonaBodega",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class),
+                                    examples = @ExampleObject(value = "{\"mensaje\":\"Zona Bodega no encontrada\"}")
+                            )
+                    )
+            }
+    )
+
     public ResponseEntity<?> guardarZonaBodega(@RequestBody ZonaBodega zonaBodega) {
         try {
             ZonaBodega zonaGuardada = zonaBodegaServicio.almacenarZonaBodega(zonaBodega);
