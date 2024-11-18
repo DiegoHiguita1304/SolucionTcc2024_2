@@ -3,7 +3,6 @@ package com.example.BODEGASTCCAPI.servicios;
 import com.example.BODEGASTCCAPI.helpers.mensajes.Mensaje;
 import com.example.BODEGASTCCAPI.helpers.validaciones.RemitenteValidacion;
 import com.example.BODEGASTCCAPI.modelos.Remitente;
-import com.example.BODEGASTCCAPI.modelos.dto.MercanciaDTO;
 import com.example.BODEGASTCCAPI.modelos.dto.RemitenteDTO;
 import com.example.BODEGASTCCAPI.modelos.mapas.IMapaRemitente;
 import com.example.BODEGASTCCAPI.repositorios.IRemitenteRepositorio;
@@ -48,14 +47,16 @@ public class RemitenteServicio {
         }
     }
 
-    // Buscar todos los remitentes
-    public List<RemitenteDTO> buscarTodosLosRemitentes() throws Exception{
-        try {
-            return  this.mapaRemitente.mapearListaRemitente(this.repositorio.findAll());
-        }catch(Exception error){
-            throw new Exception(error.getMessage());
-        }
+   // Buscar todos los remitentes y devolver como DTO
+   public List<RemitenteDTO> buscarTodosLosRemitentes() throws Exception {
+    try {
+        // Mapeo de Remitente a RemitenteDTO
+        List<Remitente> remitentes = repositorio.findAll();
+        return mapaRemitente.mapearListaRemitenteDTO(remitentes); // Asegúrate de que este método mapea correctamente
+    } catch (Exception error) {
+        throw new Exception("Error al buscar los remitentes: " + error.getMessage());
     }
+}
 
     // Buscar remitente por ID
     public Remitente buscarRemitentePorId(Long idRemitente) {

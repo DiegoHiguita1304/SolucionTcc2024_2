@@ -2,6 +2,7 @@ package com.example.BODEGASTCCAPI.controladores;
 
 import com.example.BODEGASTCCAPI.modelos.Remitente;
 import com.example.BODEGASTCCAPI.modelos.dto.MercanciaDTO;
+import com.example.BODEGASTCCAPI.modelos.dto.RemitenteDTO;
 import com.example.BODEGASTCCAPI.servicios.RemitenteServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -74,11 +75,15 @@ public class ControladorRemitente {
         }
     }
 
-    // Método para buscar todos los remitentes
+     // Método para obtener todos los remitentes como DTO
     @GetMapping("/todos")
-    public ResponseEntity<List<Remitente>> llamadoBuscarTodosRemitentes() {
-        List<Remitente> remitentes = remitenteServicio.buscarTodosRemitentes();
-        return ResponseEntity.status(HttpStatus.OK).body(remitentes);
+    public ResponseEntity<List<RemitenteDTO>> llamadoBuscarTodosRemitentes() {
+        try {
+            List<RemitenteDTO> remitentesDTO = remitenteServicio.buscarTodosLosRemitentes();
+            return ResponseEntity.status(HttpStatus.OK).body(remitentesDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     // Método para buscar remitente por ID

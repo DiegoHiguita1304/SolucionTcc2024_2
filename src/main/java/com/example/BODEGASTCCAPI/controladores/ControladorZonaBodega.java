@@ -2,6 +2,7 @@ package com.example.BODEGASTCCAPI.controladores;
 
 import com.example.BODEGASTCCAPI.modelos.ZonaBodega;
 import com.example.BODEGASTCCAPI.modelos.dto.MercanciaDTO;
+import com.example.BODEGASTCCAPI.modelos.dto.ZonaBodegaDTO;
 import com.example.BODEGASTCCAPI.servicios.ZonaBodegaServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -72,11 +73,13 @@ public class ControladorZonaBodega {
 
     // Obtener todas las zonas de bodega
     @GetMapping("/todas")
-    public ResponseEntity<List<ZonaBodega>> obtenerTodasZonasBodega() {
-        List<ZonaBodega> zonas = zonaBodegaServicio.buscarTodasZonasBodega();
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(zonas);
+    public ResponseEntity<List<ZonaBodegaDTO>> obtenerTodasLasZonasBodega() {
+        try {
+            List<ZonaBodegaDTO> zonasDTO = zonaBodegaServicio.buscarTodasLasZonasBodega();
+            return ResponseEntity.status(HttpStatus.OK).body(zonasDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     // Obtener una zona de bodega por ID

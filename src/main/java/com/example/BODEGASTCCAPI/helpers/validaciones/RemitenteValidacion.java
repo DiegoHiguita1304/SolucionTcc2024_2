@@ -1,6 +1,6 @@
 package com.example.BODEGASTCCAPI.helpers.validaciones;
 
-import com.example.BODEGASTCCAPI.helpers.mensajes.Mensaje;
+
 import org.springframework.stereotype.Component;
 
 @Component

@@ -22,4 +22,6 @@ public interface IMapaRemitente {
     RemitenteDTO mapearRemitente(Remitente remitente);
 
     List<RemitenteDTO> mapearListaRemitente(List<Remitente> listaRemitente);
+
+    List<RemitenteDTO> mapearListaRemitenteDTO(List<Remitente> remitentes);
 }
