@@ -1,8 +1,6 @@
 package com.example.BODEGASTCCAPI.controladores;
 
 import com.example.BODEGASTCCAPI.modelos.ZonaBodega;
-import com.example.BODEGASTCCAPI.modelos.dto.MercanciaDTO;
-import com.example.BODEGASTCCAPI.modelos.dto.ZonaBodegaDTO;
 import com.example.BODEGASTCCAPI.servicios.ZonaBodegaServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,122 +14,112 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
+
 
 @RestController
-@RequestMapping("/soluciontcc/v1/zonasbodega")
-@Tag(name="Servicios asociados a la entidad o tabla zonaBodega", description = "\nse hace CRUD completo a la tabla zonaBodega, permitiendo lectura y escritura de datos")
+@RequestMapping("/soluciontcc/v1/zonaBodegas")
+@Tag(name="Servicios asociados a la entidad zonaBodega", description = "\nSe hace CRUD completo a la tabla zonaBodega permitiendo lectura y escritura de datos")
 public class ControladorZonaBodega {
 
     @Autowired
-    private ZonaBodegaServicio zonaBodegaServicio;
+    ZonaBodegaServicio zonaBodegaServicio;
 
-    // Guardar una nueva zona de bodega
-    @PostMapping
+    @PostMapping()
     @Operation(
             summary = "Registra una zonaBodega nueva en la base de datos",
-            description = "al llevar los datos del modelo zonaBodega se permite un registro exitoso del objeto en Bd"
+            description = "al llevar los datos del modelo zonaBodega se permite un registro exitoso del objeto en BD"
     )
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "ZonaBodega almacenada con exito en BD",
+                            description = "Bodega almecenada con exito en BD",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = MercanciaDTO.class),
-                                    examples = @ExampleObject(value = "{\"idZona\":\"123\",\"nombre_zona\":\"A\",\"capacidad_maxima_volumen\":\"2.500\",\"capacidad_maxima_peso\":\"5.000\",\"capacidad_volumen_ocupado\":\"1.000\",\"capacidad_peso_ocupado\":\"4.000\"}")
+                                    schema = @Schema(implementation = ZonaBodega.class),
+                                    examples = @ExampleObject(value = "{\"nombreZona\":\"Zona Sur\",\"capacidadMaximaVolumen\":\"400\",\"capacidadMaximaPeso\":\"800 \",\"capacidadVolumenOcupado\":\"100\",\"capacidadPesoOcupado\":\"50\"}")
                             )
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Error al registrar la ZonaBodega",
+                            description = "Error al registrar la bodega",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = String.class),
-                                    examples = @ExampleObject(value = "{\"mensaje\":\"Zona Bodega no encontrada\"}")
+                                    examples = @ExampleObject(value = "{\"mensaje\":\"La capacidad maxima del volumen no puede ser negativo\"}")
                             )
                     )
             }
     )
-
-    public ResponseEntity<?> guardarZonaBodega(@RequestBody ZonaBodega zonaBodega) {
-        try {
-            ZonaBodega zonaGuardada = zonaBodegaServicio.almacenarZonaBodega(zonaBodega);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(zonaGuardada);
-        } catch (Exception error) {
-            HashMap<String, Object> respuesta = new HashMap<>();
-            respuesta.put("mensaje", error.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuesta);
-        }
+    public ResponseEntity<?> almacenarZonaBodega(@RequestBody ZonaBodega datosZonaBodega){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(this.zonaBodegaServicio.almacenarZonaBodega(datosZonaBodega));
     }
 
-    // Obtener todas las zonas de bodega
-    @GetMapping("/todas")
-    public ResponseEntity<List<ZonaBodegaDTO>> obtenerTodasLasZonasBodega() {
-        try {
-            List<ZonaBodegaDTO> zonasDTO = zonaBodegaServicio.buscarTodasLasZonasBodega();
-            return ResponseEntity.status(HttpStatus.OK).body(zonasDTO);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    @GetMapping()
+    @Operation(
+            summary = "Buscar todos los registros de zonaBodsegas almacenadas en la base de datos",
+            description = "Se encuentran todos los registros y se envian al cliente en formato JSON"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "zonBodegas encontradas con exito en BD",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ZonaBodega.class),
+                                    examples = @ExampleObject(value = "{\"nombreZona\":\"Zona Sur\",\"capacidadMaximaVolumen\":\"400\",\"capacidadMaximaPeso\":\"800 \",\"capacidadVolumenOcupado\":\"100\",\"capacidadPesoOcupado\":\"50\"}")
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Error al buscar los registros de zonaBodega en la DB",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class),
+                                    examples = @ExampleObject(value = "{\"mensaje\":\"La capacidad maxima del volumen no puede ser negativo\"}")
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<?> buscarTodasZonasBodega(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(this.zonaBodegaServicio.buscarTodasZonasBodega());
     }
 
-    // Obtener una zona de bodega por ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerZonaBodegaPorId(@PathVariable("id") Long idZona) {
-        try {
-            ZonaBodega zonaBodega = zonaBodegaServicio.buscarZonaBodegaPorId(idZona);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(zonaBodega);
-        } catch (Exception error) {
-            HashMap<String, Object> respuesta = new HashMap<>();
-            respuesta.put("mensaje", error.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(respuesta);
-        }
-    }
-
-    // Modificar una zona de bodega
-    @PutMapping("/modificar/{id}")
-    public ResponseEntity<?> modificarZonaBodega(@PathVariable("id") Long idZona, @RequestBody ZonaBodega zonaBodegaActualizada) {
-        try {
-            ZonaBodega zonaModificada = zonaBodegaServicio.modificarZonaBodega(idZona, zonaBodegaActualizada);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(zonaModificada);
-        } catch (Exception error) {
-            HashMap<String, Object> respuesta = new HashMap<>();
-            respuesta.put("mensaje", error.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(respuesta);
-        }
-    }
-
-    // Eliminar una zona de bodega
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<?> eliminarZonaBodega(@PathVariable("id") Long idZona) {
-        try {
-            boolean eliminado = zonaBodegaServicio.eliminarZonaBodega(idZona);
-            HashMap<String, Object> respuesta = new HashMap<>();
-            respuesta.put("mensaje", "Zona de bodega eliminada correctamente");
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(respuesta);
-        } catch (Exception error) {
-            HashMap<String, Object> respuesta = new HashMap<>();
-            respuesta.put("mensaje", error.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(respuesta);
-        }
+    @Operation(
+            summary = "Buscar el registro de zonaBodsega por el id almacenado en la base de datos",
+            description = "Se encuentra el registro y se envía al cliente en formato JSON"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "zonBodega encontrado con exito en BD",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ZonaBodega.class),
+                                    examples = @ExampleObject(value = "{\"nombreZona\":\"Zona Sur\",\"capacidadMaximaVolumen\":\"400\",\"capacidadMaximaPeso\":\"800 \",\"capacidadVolumenOcupado\":\"100\",\"capacidadPesoOcupado\":\"50\"}")
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Error al buscar el registro de zonaBodega en la DB",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = String.class),
+                                    examples = @ExampleObject(value = "{\"mensaje\":\"La capacidad maxima del volumen no puede ser negativo\"}")
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<?> buscarZonaBodegaPorId(@PathVariable Long id){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(this.zonaBodegaServicio.buscarZonaBodegaPorId(id));
     }
 }

@@ -1,30 +1,36 @@
 package com.example.BODEGASTCCAPI.modelos;
 
-
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "remitentes")
 public class Remitente {
 
+    //id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="nombres", nullable = false)
-    private String nombres;
+    //nombres
+    @Column(name = "nombres", nullable = false, length = 100)
+    private String nombres; //Solo se aceptan letras y espacios
 
-    @Column(name="departamento", nullable = false)
-    private String departamento;
+    //depto
+    @Column(name = "departamento", nullable = false, length = 50)
+    private String departamento; //Solo se aceptan letras y espacios y maximo 50 caracteres
 
-    @Column(name="municipio", nullable = false)
-    private String municipio;
+    //municipio
+    @Column(name = "municipio", nullable = false, length = 50)
+    private String municipio; //Solo se aceptan letras y espacios y maximo 50 caracteres
 
-    @Column(name="direccion", nullable = false)
-    private String direccion;
+    //direccion
+    @Column(name = "direccion", nullable = false, length = 50)
+    private String direccion; //Maximo 50 caracteres
 
-    @Column(name="metodo_pago", nullable = false)
-    private String metodoPago;
+    //metodopago
+    @Column(name = "metodo_pago", nullable = false, length = 50)
+    private String metodoPago; //Solo se aceptan letras y espacios y maximo 50 caracteres
+
 
     public Remitente() {
     }

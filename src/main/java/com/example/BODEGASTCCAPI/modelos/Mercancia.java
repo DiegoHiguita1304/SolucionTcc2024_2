@@ -1,9 +1,9 @@
 package com.example.BODEGASTCCAPI.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-
+import java.util.UUID;
 
 @Entity
 @Table(name = "mercancias")
@@ -11,39 +11,43 @@ public class Mercancia {
 
     //iup
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "iup")
-    private Long iup;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID iup;
     //volumen
     @Column(name = "volumen", nullable = false, unique = false)
-    private Double volumen; //solo se aceptan numeros positivos
+    private Double volumen; //Solo se aceptan numeros positivos
     //peso
-    private Double peso; //solo se aceptan numeros positivos
+    private Double peso; //Solo se aceptan numeros positivos
     //nombre
-
-    @Column(name = "nombre_mercancia", nullable = false, length = 50)
-    private String nombre; //maximo 50 caracteres y solo se acepan letras y espacios
+    @Column(name = "nombre_mercancia", nullable = false, unique = false, length = 50)
+    private String nombre; //Maximo 50 caracteres y solo se aceptan letras y espacios
     //tipoDestinatario
+    @Column(name = "tipo_destinatario", nullable = false,  length = 50)
     private String tipoDestinatario;
     //nombreDestinatario
+    @Column(name = "nombre_destinatario", nullable = false,  length = 50)
     private String nombreDestinatario;
     //UbicacionDestino(depto/ciudad/direccion)
     private String departamento;
     private String ciudad;
     private String direccion;
-
-    //remitente
-    //zonaBodega
-
     //fechaIngreso
-    private LocalDate fechaIngreso; //fecha ingreso no puede ser posterior a la fecha de salida
+    private LocalDate fechaIngreso; //Fecha ingreso no puede ser posterior a la fecha salida
     //fechaSalida
     private LocalDate fechaSalida;
+    private  String nombreZona;
+
+
+//    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "fk_zona_bodega", referencedColumnName = "id_zona")
+    @JsonBackReference
+    private ZonaBodega zonaBodega;
 
     public Mercancia() {
     }
 
-    public Mercancia(Long iup, Double volumen, Double peso, String nombre, String tipoDestinatario, String nombreDestinatario, String departamento, String ciudad, String direccion, LocalDate fechaIngreso, LocalDate fechaSalida) {
+    public Mercancia(UUID iup, Double volumen, Double peso, String nombre, String tipoDestinatario, String nombreDestinatario, String departamento, String ciudad, String direccion, LocalDate fechaIngreso, LocalDate fechaSalida, String nombreZona) {
         this.iup = iup;
         this.volumen = volumen;
         this.peso = peso;
@@ -55,13 +59,14 @@ public class Mercancia {
         this.direccion = direccion;
         this.fechaIngreso = fechaIngreso;
         this.fechaSalida = fechaSalida;
+        this.nombreZona = nombreZona;
     }
 
-    public Long getIup() {
+    public UUID getIup() {
         return iup;
     }
 
-    public void setIup(Long iup) {
+    public void setIup(UUID iup) {
         this.iup = iup;
     }
 
@@ -143,5 +148,18 @@ public class Mercancia {
 
     public void setFechaSalida(LocalDate fechaSalida) {
         this.fechaSalida = fechaSalida;
+    }
+
+    public String getNombreZona() {
+        return nombreZona;
+    }
+
+    public void setNombreZona(String nombreZona) {
+        this.nombreZona = nombreZona;
+    }
+
+    public ZonaBodega getZonaBodega() {
+        return  null;
+
     }
 }

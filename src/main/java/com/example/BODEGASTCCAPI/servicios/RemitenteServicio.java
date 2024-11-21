@@ -15,84 +15,65 @@ import java.util.List;
 public class RemitenteServicio {
 
     @Autowired
-    IRemitenteRepositorio repositorio;
-
-    @Autowired
-    RemitenteValidacion validacion;
-
+    IRemitenteRepositorio remitenteRepositorio;
     @Autowired
     IMapaRemitente mapaRemitente;
+    @Autowired
+    RemitenteValidacion remitenteValidacion;
 
-    // Guardar remitente
+    //Guardar
     public Remitente almacenarRemitente(Remitente datosRemitente) throws Exception {
         try {
-            // Aplicar validaciones
-            if (!validacion.validarNombres(datosRemitente.getNombres())) {
+            if (!this.remitenteValidacion.validarNombre(datosRemitente.getNombres())){
                 throw new Exception(Mensaje.NOMBRE_INVALIDO.getMensaje());
             }
-
-            if (!validacion.validarDepartamento(datosRemitente.getDepartamento())) {
-                throw new Exception(Mensaje.DEPARTAMENTO_INVALIDO.getMensaje());
+            if (!this.remitenteValidacion.validarDepartamento(datosRemitente.getDepartamento())){
+                throw new Exception (Mensaje.DEPARTAMENTO_INVALIDO.getMensaje());
             }
-
-            if (!validacion.validarMetodoPago(datosRemitente.getMetodoPago())) {
+            if (!this.remitenteValidacion.validarMunicipio(datosRemitente.getMunicipio())){
+                throw new Exception(Mensaje.MUNICIPIO_INVALIDO.getMensaje());
+            }
+            if (this.remitenteValidacion.validarDireccion(datosRemitente.getDireccion())){
+                throw new Exception(Mensaje.DIRECCION_INVALIDA.getMensaje());
+            }
+            if (!this.remitenteValidacion.validarMetodoPago(datosRemitente.getMetodoPago())){
                 throw new Exception(Mensaje.METODO_PAGO_INVALIDO.getMensaje());
             }
+            return remitenteRepositorio.save(datosRemitente);
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
 
-            // Guardar en el repositorio si las validaciones son correctas
-            return repositorio.save(datosRemitente);
-
-        } catch (Exception error) {
+    //Buscar todos los remitentes
+    public List<RemitenteDTO> buscarTodosRemitentes() throws Exception{
+        try{
+            return this.mapaRemitente.mapearListaRemitentes(remitenteRepositorio.findAll());
+        }catch (Exception error){
             throw new Exception(error.getMessage());
         }
     }
 
-   // Buscar todos los remitentes y devolver como DTO
-   public List<RemitenteDTO> buscarTodosLosRemitentes() throws Exception {
-    try {
-        // Mapeo de Remitente a RemitenteDTO
-        List<Remitente> remitentes = repositorio.findAll();
-        return mapaRemitente.mapearListaRemitenteDTO(remitentes); // Asegúrate de que este método mapea correctamente
-    } catch (Exception error) {
-        throw new Exception("Error al buscar los remitentes: " + error.getMessage());
+    //Buscar por id
+    public Remitente buscarRemitentePorId(Long id){
+        return remitenteRepositorio.findById(id).orElse(null);
     }
-}
-
-    // Buscar remitente por ID
-    public Remitente buscarRemitentePorId(Long idRemitente) {
-        return repositorio.findById(idRemitente).orElse(null);
+    //Buscar por nombre
+    public Remitente buscarRemitentePorNombre(String nombre){
+        return null;
     }
-
-    // Buscar remitente por nombre
-    public List<Remitente> buscarRemitentePorNombre(String nombreRemitente) {
-        return repositorio.findByNombresContainingIgnoreCase(nombreRemitente);
+    //Modificar
+    public Remitente modificarRemitente(Long id, Remitente datosNuevosRemitente){
+        return null;
     }
-
-    // Modificar remitente
-    public Remitente modificarRemitente(Long idRemitente, Remitente datosRemitente) throws Exception {
+    //Eliminar
+    public boolean eliminarRemitente(Long id){
         try {
-            Remitente remitenteExistente = repositorio.findById(idRemitente).orElseThrow(() -> new Exception("Remitente no encontrado"));
-
-            remitenteExistente.setNombres(datosRemitente.getNombres());
-            remitenteExistente.setDepartamento(datosRemitente.getDepartamento());
-            remitenteExistente.setMunicipio(datosRemitente.getMunicipio());
-            remitenteExistente.setDireccion(datosRemitente.getDireccion());
-            remitenteExistente.setMetodoPago(datosRemitente.getMetodoPago());
-
-            return repositorio.save(remitenteExistente);
-
-        } catch (Exception error) {
-            throw new Exception(error.getMessage());
-        }
-    }
-
-    // Eliminar remitente
-    public boolean eliminarRemitente(Long idRemitente) {
-        try {
-            repositorio.deleteById(idRemitente);
+            remitenteRepositorio.deleteById(id);
             return true;
-        } catch (Exception error) {
+        }catch (Exception e){
             return false;
         }
     }
+
 }

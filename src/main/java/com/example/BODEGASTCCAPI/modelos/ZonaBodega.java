@@ -1,24 +1,38 @@
 package com.example.BODEGASTCCAPI.modelos;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
-@Table(name = "zonas")
+@Table(name = "zonas_bodega")
 public class ZonaBodega {
+
+    //idZona
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_zona")
-    private  Long idZona;
-    @Column(name = "nombre_zona", nullable = false)
-    private String nombreZona;
+    @Column(name = "id_zona", nullable = false, unique = true)
+    private Long idZona;
+    //nombreZona
+    @Column(name = "nombre_zona", nullable = false, length = 100)
+    private String nombreZona; //Solo se aceptan letras y espacios y maximo 50 caracteres
+    //capacidadMaximaVolumen
     @Column(name = "capacidad_maxima_volumen", nullable = false)
-    private Double capacidadMaximaVolumen;
+    private Double capacidadMaximaVolumen; //Solo se aceptan numeros positivos
+    //capacidadMaximaPeso
     @Column(name = "capacidad_maxima_peso", nullable = false)
-    private Double capacidadMaximaPeso;
+    private Double capacidadMaximaPeso; //Solo se aceptan numeros positivos
+    //capacidadVolumenOcupado
     @Column(name = "capacidad_volumen_ocupado", nullable = false)
-    private Double capacidadVolumenOcupado;
+    private Double capacidadVolumenOcupado; //Solo se aceptan numeros positivos
+    //capacidadPesoOcupado
     @Column(name = "capacidad_peso_ocupado", nullable = false)
-    private Double capacidadPesoOcupado;
+    private Double capacidadPesoOcupado; //Solo se aceptan numeros positivos
+
+    @OneToMany(mappedBy = "zonaBodega")
+    @JsonManagedReference
+    private List<Mercancia> mercancias;
 
     public ZonaBodega() {
     }
@@ -79,4 +93,6 @@ public class ZonaBodega {
     public void setCapacidadPesoOcupado(Double capacidadPesoOcupado) {
         this.capacidadPesoOcupado = capacidadPesoOcupado;
     }
+
+
 }

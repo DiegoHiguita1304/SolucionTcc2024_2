@@ -1,8 +1,6 @@
 package com.example.BODEGASTCCAPI.modelos.dto;
 
 public class RemitenteDTO {
-
-    private Long id;
     private String nombres;
     private String departamento;
     private String municipio;
@@ -12,21 +10,12 @@ public class RemitenteDTO {
     public RemitenteDTO() {
     }
 
-    public RemitenteDTO(Long id, String nombres, String departamento, String municipio, String direccion, String metodoPago) {
-        this.id = id;
+    public RemitenteDTO(String nombres, String departamento, String municipio, String direccion, String metodoPago) {
         this.nombres = nombres;
         this.departamento = departamento;
         this.municipio = municipio;
         this.direccion = direccion;
         this.metodoPago = metodoPago;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getNombres() {

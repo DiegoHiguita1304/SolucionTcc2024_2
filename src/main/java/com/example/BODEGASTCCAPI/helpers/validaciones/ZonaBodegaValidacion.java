@@ -2,21 +2,46 @@ package com.example.BODEGASTCCAPI.helpers.validaciones;
 
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class ZonaBodegaValidacion {
 
-    // Validación 1: La capacidad máxima de volumen debe ser mayor a 0
-    public boolean validarCapacidadMaximaVolumen(Double capacidadMaximaVolumen) {
-        return capacidadMaximaVolumen > 0;
+
+
+    public boolean validarNombre(String zonaBodegaNombre){
+        if (zonaBodegaNombre.length() > 50){
+            return false;
+        }
+        else return(zonaBodegaNombre.matches("^[a-zA-Z\\s]+$"));
     }
 
-    // Validación 2: La capacidad máxima de peso debe ser mayor a 0
-    public boolean validarCapacidadMaximaPeso(Double capacidadMaximaPeso) {
-        return capacidadMaximaPeso > 0;
+    public boolean validarCapacidadMaximaVolumen(Double zonaBodegaCapacidadMaximaVolumen){
+        if (zonaBodegaCapacidadMaximaVolumen <= 0){
+            return false;
+        }
+        else return true;
     }
 
-    // Validación 3: El volumen y peso ocupados no deben superar la capacidad máxima
-    public boolean validarCapacidadesOcupadas(Double volumenOcupado, Double capacidadMaximaVolumen, Double pesoOcupado, Double capacidadMaximaPeso) {
-        return volumenOcupado <= capacidadMaximaVolumen && pesoOcupado <= capacidadMaximaPeso;
+    public boolean validarCapacidadMaximaPeso(Double zonaBodegaCapacidadMaximaPeso){
+        if(zonaBodegaCapacidadMaximaPeso <= 0){
+            return false;
+        }
+        else return true;
     }
+
+    public boolean validarCapacidadVolumenOcupado(Double zonaBodegaCapacidadVolumenOcupado, Double zonaBodegaCapacidadMaximaVolumen){
+        if(zonaBodegaCapacidadVolumenOcupado < 0 || zonaBodegaCapacidadVolumenOcupado > zonaBodegaCapacidadMaximaVolumen){
+            return false;
+        }
+        else return true;
+    }
+
+    public boolean validarCapacidadPesoOcupado(Double zonaBodegaCapacidadPesoOcupado, Double zonaBodegaCapacidadMaximaPeso){
+        if(zonaBodegaCapacidadPesoOcupado < 0 || zonaBodegaCapacidadPesoOcupado > zonaBodegaCapacidadMaximaPeso){
+            return false;
+        }
+        else return true;
+    }
+
 }
+

@@ -15,30 +15,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+
 
 @RestController
-@RequestMapping("/soluciontcc/v1/mercancias")
-@Tag(name="Servicios asociados a la entidad o tabla mercancias", description = "\nse hace CRUD completo a la tabla mercancias, permitiendo lectura y escritura de datos")
+@RequestMapping("/soluciontcc/v1/mercancia")
+@Tag(name="Servicios asociados a la entidad mercancía", description = "\nSe hace CRUD completo a la tabla Mercancía permitiendo lectura y escritura de datos")
 public class ControladorMercancia {
+    //Llamar al servicio para
+    //Inyectar una dependencia al servicio
 
     @Autowired
     MercanciaServicio mercanciaServicio;
 
-    @PostMapping
+
+    @PostMapping()
     @Operation(
-            summary = "Registra una mercancia nueva en la base de datos",
-            description = "al llevar los datos del modelomercancia se permite un registro exitoso del objeto en Bd"
+            summary = "Registra una mercanciaDTO nueva en la base de datos",
+            description = "al llevar los datos del modelo mercanciaDTO se permite un registro exitoso del objeto en BD"
     )
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "Mercancia almacenada con exito en BD",
+                            description = "MercanciaDTO almecenada con exito en BD",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = MercanciaDTO.class),
-                                    examples = @ExampleObject(value = "{\"volumen\":\"20.5\",\"peso\":\"400\",\"nombre\":\"Nevera lG\",\"direccion\":\"calle 100 sur 123\",\"fechaIngreso\":\"2024-10-8\"}")
+                                    examples = @ExampleObject(value = "{\"volumen\":\"20.5\",\"peso\":\"400\",\"nombre\":\"Nevera LG\",\"ciudad\":\"Medellin\",\"direccion\":\"calle 100 sur 123\",\"fechaIngreso\":\"2024-10-8\",\"nombreZona\":\"Zona A\"}")
                             )
                     ),
                     @ApiResponse(
@@ -47,64 +50,47 @@ public class ControladorMercancia {
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = String.class),
-                                    examples = @ExampleObject(value = "{\"mensaje\":\"El volumen no puede ser negativo\"}")
+                                    examples = @ExampleObject(value = "{\"mensaje\":\"eL volumen no puede ser negativo\"}")
                             )
                     )
             }
     )
-    public ResponseEntity<?> LlamadoGuardarMercancia(@RequestBody Mercancia datosMercanciaEnviadosCliente) {
-        try {
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(this.mercanciaServicio.almacenarMercancia(datosMercanciaEnviadosCliente));
-        } catch (Exception error) {
-            HashMap<String, Object> mensajeRespuesta = new HashMap<>();
-            mensajeRespuesta.put("mensaje", error.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(mensajeRespuesta);
-        }
+    public ResponseEntity<?> guardarMercanciaDTO(@RequestBody Mercancia datosMercanciaEnviadosCliente){
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(this.mercanciaServicio.almacenarMercanciaDTO(datosMercanciaEnviadosCliente));
     }
 
-    @GetMapping
+    @GetMapping()
     @Operation(
-            summary = "Buscar todas las mercancia almacenadas en la base de datos",
-            description = "Se encuentran todos los registros y se envian en formato JSON hacia el cliente"
+            summary = "Buscar todos los registros de mercancías almacenadas en la base de datos",
+            description = "Se encuentran todos los registros y se envian al cliente en formato JSON"
     )
     @ApiResponses(
             value = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Mercancia Encontrada con exito en BD",
+                            description = "MercanciasDTO encontradas con exito en BD",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = MercanciaDTO.class),
-                                    examples = @ExampleObject(value = "{\"volumen\":\"20.5\",\"peso\":\"400\",\"nombre\":\"Nevera lG\",\"direccion\":\"calle 100 sur 123\",\"fechaIngreso\":\"2024-10-8\"}")
+                                    examples = @ExampleObject(value = "{\"volumen\":\"20.5\",\"peso\":\"400\",\"nombre\":\"Nevera LG\",\"ciudad\":\"Medellin\",\"direccion\":\"calle 100 sur 123\",\"fechaIngreso\":\"2024-10-8\",\"nombreZona\":\"Zona A\"}")
                             )
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Error al buscar la mercancia",
+                            description = "Error al buscar los registros de mercancia en la DB",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = String.class),
-                                    examples = @ExampleObject(value = "{\"mensaje\":\"El volumen no puede ser negativo\"}")
+                                    examples = @ExampleObject(value = "{\"mensaje\":\"eL volumen no puede ser negativo\"}")
                             )
                     )
             }
     )
-    public ResponseEntity<?> LlamadoBuscarMercanciaDTO() {
-        try {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(this.mercanciaServicio.buscarTodasMercancias());
-        } catch (Exception error) {
-            HashMap<String, Object> mensajeRespuesta = new HashMap<>();
-            mensajeRespuesta.put("mensaje", error.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(mensajeRespuesta);
-        }
+    public ResponseEntity<?> LlamadoBuscarMercanciaDTO(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(this.mercanciaServicio.buscarTodasMercancias());
     }
-
 }
